@@ -128,11 +128,9 @@ php artisan settings:create {module} {key} {type} --value="" --description=""
 **Ejemplos:**
 
 ```bash
-php artisan settings:create exams exam_type string --value="partial" --description="Tipo de examen activo: partial o final"
+php artisan settings:create general maintenance_mode boolean --value="false" --description="Modo mantenimiento del sitio"
 
 php artisan settings:create mail smtp_host string --value="smtp.gmail.com" --description="Host del servidor SMTP"
-
-php artisan settings:create general maintenance_mode boolean --value="false" --description="Modo mantenimiento del sitio"
 ```
 
 > Si el setting ya existe, el comando no lo modifica ni genera error — simplemente lo omite.
@@ -143,14 +141,6 @@ Puedes configurar el tiempo de vida del caché de settings mediante la siguiente
 
 ```nginx
 SETTING_MANAGER_CACHE_TTL=3600
-```
-
-### Guard de autenticación
-
-Puedes configurar el guard utilizado para registrar el usuario en los logs mediante:
-
-```nginx
-SETTING_MANAGER_GUARD=api
 ```
 
 > Este paquete es compatible con `lechuganegra/authmanager`. Si lo tienes instalado, puedes utilizar el guard `api` que provee para la autenticación de los endpoints de settings.

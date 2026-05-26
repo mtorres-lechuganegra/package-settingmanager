@@ -1,0 +1,143 @@
+{
+  "info": {
+    "_postman_id": "0341a997-1f09-4ae4-87c7-e064079ad29b",
+    "name": "Packages",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "3784078",
+    "_collection_link": "https://go.postman.co/collection/3784078-0341a997-1f09-4ae4-87c7-e064079ad29b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Setting Manager",
+      "item": [
+        {
+          "name": "Get Setting",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEvYXBpL3ByaXZrZXkvYXV0aGVudGljYXRlIiwiaWF0IjoxNzc1MjYwMDMxLCJleHAiOjE3NzU0MzI4MzEsIm5iZiI6MTc3NTI2MDAzMSwianRpIjoiaVRtV2tUc29NMWhFdExPUCIsInN1YiI6IjIiLCJwcnYiOiIwZjNhODE2NjA1YzUyMTIzNGQ3NDM3YWIzZTdmNWUxNmI3NTBkNWQwIn0.8dIKXq3JyJGtCnv1N9ocGmiaj8TURNDAviMqozdMdu0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/settings/general",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "general"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Setting By Key",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEvYXBpL3ByaXZrZXkvYXV0aGVudGljYXRlIiwiaWF0IjoxNzc1MjYwMDMxLCJleHAiOjE3NzU0MzI4MzEsIm5iZiI6MTc3NTI2MDAzMSwianRpIjoiaVRtV2tUc29NMWhFdExPUCIsInN1YiI6IjIiLCJwcnYiOiIwZjNhODE2NjA1YzUyMTIzNGQ3NDM3YWIzZTdmNWUxNmI3NTBkNWQwIn0.8dIKXq3JyJGtCnv1N9ocGmiaj8TURNDAviMqozdMdu0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/settings/general/maintenance_mode",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "general",
+                "maintenance_mode"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Setting",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEvYXBpL3ByaXZrZXkvYXV0aGVudGljYXRlIiwiaWF0IjoxNzc1MjYwMDMxLCJleHAiOjE3NzU0MzI4MzEsIm5iZiI6MTc3NTI2MDAzMSwianRpIjoiaVRtV2tUc29NMWhFdExPUCIsInN1YiI6IjIiLCJwcnYiOiIwZjNhODE2NjA1YzUyMTIzNGQ3NDM3YWIzZTdmNWUxNmI3NTBkNWQwIn0.8dIKXq3JyJGtCnv1N9ocGmiaj8TURNDAviMqozdMdu0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"data\": [\r\n        { \"key\": \"maintenance_mode\", \"value\": 1 }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/settings/general",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "general"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "url",
+      "value": ""
+    }
+  ]
+}
