@@ -1,0 +1,28 @@
+{
+    "name": "lechuganegra/settingmanager",
+    "description": "Paquete para gestión de configuraciones por módulo para Laravel.",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Marco Torres",
+            "email": "marquillo01@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "LechugaNegra\\SettingManager\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.2",
+        "laravel/framework": ">=11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LechugaNegra\\SettingManager\\Providers\\SettingManagerProvider"
+            ]
+        }
+    },
+    "version": "1.0.0"
+}
