@@ -4,6 +4,7 @@ namespace LechugaNegra\SettingManager\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use LechugaNegra\SettingManager\Services\SettingLogService;
 
 class Setting extends Model
@@ -35,6 +36,7 @@ class Setting extends Model
             'boolean' => filter_var($raw, FILTER_VALIDATE_BOOLEAN),
             'json',
             'array' => json_decode($raw, true),
+            'encrypted' => Crypt::decryptString($raw),
             default => $raw,
         };
     }
@@ -47,6 +49,7 @@ class Setting extends Model
             'json',
             'array' => json_encode($val),
             'boolean' => $val ? 'true' : 'false',
+            'encrypted' => Crypt::encryptString((string) $val),
             default => (string) $val,
         };
     }

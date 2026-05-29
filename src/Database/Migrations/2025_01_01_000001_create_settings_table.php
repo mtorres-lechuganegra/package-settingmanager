@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('module', 100);
             $table->string('key', 150);
-            $table->enum('type', ['string', 'integer', 'float', 'boolean', 'json', 'array'])->default('string');
+            $table->enum('type', ['string', 'integer', 'float', 'boolean', 'json', 'array', 'encrypted'])->default('string');
             $table->text('value')->nullable();
             $table->string('description', 255)->nullable();
             $table->boolean('is_active')->default(true);
