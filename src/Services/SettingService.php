@@ -12,15 +12,17 @@ class SettingService
      * Obtener todos los settings activos de un módulo.
      *
      * @param string $module Módulo a consultar.
+     * @param bool $includeLocked Incluid registros bloqueados.
      * @return array Settings del módulo con su valor y tipo.
      */
-    public function getByModule(string $module): array
+    public function getByModule(string $module, bool $includeLocked = false): array
     {
         return Cache::remember(
             "settingmanager.module.{$module}",
             config('settingmanager.cache_ttl', 3600),
             fn() => Setting::where('module', $module)
                 ->where('is_active', true)
+                ->when(!$includeLocked, fn($q) => $q->where('is_locked', false))
                 ->get()
                 ->mapWithKeys(fn($s) => [$s->key => [
                     'value' => $s->value,
@@ -35,9 +37,10 @@ class SettingService
      *
      * @param string $module Módulo del setting.
      * @param string $key Clave del setting.
+     * @param bool $includeLocked Incluid registros bloqueados.
      * @return array|null Setting con módulo, clave, tipo y valor, o null si no existe.
      */
-    public function get(string $module, string $key): array|null
+    public function get(string $module, string $key, bool $includeLocked = false): array|null
     {
         $setting = Cache::remember(
             "settingmanager.{$module}.{$key}",
@@ -45,6 +48,7 @@ class SettingService
             fn() => Setting::where('module', $module)
                 ->where('key', $key)
                 ->where('is_active', true)
+                ->when(!$includeLocked, fn($q) => $q->where('is_locked', false))
                 ->first()
         );
 
@@ -65,15 +69,17 @@ class SettingService
      *
      * @param string $module Módulo al que pertenecen los settings.
      * @param array $data Array con clave 'data' conteniendo los pares key/value a actualizar.
+     * @param bool $includeLocked Incluid registros bloqueados.
      * @return array Settings actualizados con su valor y tipo.
      */
-    public function update(string $module, array $data): array
+    public function update(string $module, array $data, bool $includeLocked = false): array
     {
         $updated = [];
 
         foreach ($data['data'] as $item) {
             $setting = Setting::where('module', $module)
                 ->where('key', $item['key'])
+                ->when(!$includeLocked, fn($q) => $q->where('is_locked', false))
                 ->first();
 
             if (!$setting) {

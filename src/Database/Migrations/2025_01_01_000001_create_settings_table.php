@@ -16,6 +16,7 @@ return new class extends Migration
             $table->text('value')->nullable();
             $table->string('description', 255)->nullable();
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_locked')->default(false);
             $table->timestamps();
 
             $table->unique(['module', 'key'], 'uq_settings_module_key');

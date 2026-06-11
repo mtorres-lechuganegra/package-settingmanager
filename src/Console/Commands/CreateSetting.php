@@ -13,7 +13,8 @@ class CreateSetting extends Command
                             {type : Tipo de dato (string|integer|float|boolean|json|array)}
                             {--value= : Valor inicial}
                             {--description= : Descripción del setting}
-                            {--inactive : Crear el setting como inactivo}';
+                            {--inactive : Crear el setting como inactivo}
+                            {--locked : Bloquear el setting para que no sea modificable por CRUD}';
 
     protected $description = 'Crea un nuevo setting de configuración';
 
@@ -29,6 +30,7 @@ class CreateSetting extends Command
                 'value' => $this->option('value'),
                 'description' => $this->option('description'),
                 'is_active' => !$this->option('inactive'),
+                'is_locked' => (bool) $this->option('locked'),
             ]
         );
 

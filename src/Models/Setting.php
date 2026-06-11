@@ -18,10 +18,12 @@ class Setting extends Model
         'value',
         'description',
         'is_active',
+        'is_locked',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_locked' => 'boolean',
     ];
 
     public function getValueAttribute(?string $raw): mixed
@@ -43,6 +45,10 @@ class Setting extends Model
 
     public function setValueAttribute(mixed $val): void
     {
+        if ($this->is_locked) {
+            throw new \RuntimeException("El setting [{$this->module}.{$this->key}] está bloqueado y no puede ser modificado por CRUD.");
+        }
+
         $type = $this->attributes['type'] ?? $this->type ?? 'string';
 
         $this->attributes['value'] = match ($type) {
@@ -61,7 +67,7 @@ class Setting extends Model
         foreach ($events as $event) {
             static::$event(function ($model) use ($event) {
 
-                $safeFields = ['id', 'module', 'key', 'type', 'value', 'is_active'];
+                $safeFields = ['id', 'module', 'key', 'type', 'value', 'is_active', 'is_locked'];
                 $logData = collect($model->toArray())->only($safeFields)->toArray();
 
                 SettingLogService::register('settings_logs', [
