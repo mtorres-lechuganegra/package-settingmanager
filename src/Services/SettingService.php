@@ -58,6 +58,7 @@ class SettingService
 
         return [
             'module' => $module,
+            'group' => $setting->group,
             'key' => $key,
             'type' => $setting->type,
             'value' => $setting->value,
@@ -93,6 +94,7 @@ class SettingService
             $this->clearCache($module, $item['key']);
 
             $updated[$item['key']] = [
+                'group' => $setting->group,
                 'value' => $setting->value,
                 'type' => $setting->type,
             ];

@@ -10,11 +10,13 @@ return new class extends Migration
     {
         Schema::create('settings_logs', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('data_id')->nullable()->index();
             $table->string('data_module', 100)->nullable()->index();
-            $table->string('data_key', 150)->nullable()->index();
+            $table->string('data_code', 100)->nullable()->index();
+            $table->string('data_name')->nullable()->index();
             $table->string('data_type')->nullable()->index();
-            $table->string('data_old_value')->nullable()->index();
-            $table->string('data_new_value')->nullable()->index();
+            $table->timestamp('data_date')->nullable()->index();
+            $table->string('data_status')->nullable()->index();
             $table->string('action', 50);
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->json('log_data')->nullable();

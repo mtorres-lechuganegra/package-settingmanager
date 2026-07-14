@@ -11,11 +11,13 @@ class SettingLog extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'data_id',
         'data_module',
-        'data_key',
+        'data_code',
+        'data_name',
         'data_type',
-        'data_old_value',
-        'data_new_value',
+        'data_date',
+        'data_status',
         'action',
         'user_id',
         'log_data',
@@ -24,6 +26,7 @@ class SettingLog extends Model
     ];
 
     protected $casts = [
+        'data_date' => 'datetime',
         'log_data' => 'array',
     ];
 }

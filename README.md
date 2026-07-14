@@ -5,7 +5,7 @@ Este paquete de Laravel proporciona una solución centralizada para la gestión 
 ## Características Principales
 
 * **Gestión por módulo:** Organiza las configuraciones en módulos lógicos para facilitar su administración y búsqueda.
-* **Tipos de dato:** Soporte para `string`, `integer`, `float`, `boolean`, `json` y `array`, con casteo automático en la capa de modelo.
+* **Tipos de dato:** Soporte para `string`, `integer`, `float`, `boolean`, `json` y `array`, `encrypted` con casteo automático en la capa de modelo.
 * **Caché automático:** Los valores se cachean automáticamente y se invalidan al actualizarse.
 * **Registro de auditoría:** Cada creación o modificación de un setting queda registrada en la tabla `settings_logs`.
 * **Comando Artisan:** Creación de nuevos settings mediante el comando `settings:create`, sin necesidad de modificar seeders.
@@ -122,7 +122,7 @@ Puede importar el archivo `postman_collection.json` que se ubica en la carpeta `
 Los settings no se crean desde el API. Para registrar un nuevo setting, utiliza el comando Artisan `settings:create`:
 
 ```bash
-php artisan settings:create {module} {key} {type} --value="" --description=""
+php artisan settings:create {module} {key} {type} [--group=] [--value=] [--description=] [--inactive] [--locked]
 ```
 
 **Ejemplos:**
@@ -130,7 +130,7 @@ php artisan settings:create {module} {key} {type} --value="" --description=""
 ```bash
 php artisan settings:create general maintenance_mode boolean --value="false" --description="Modo mantenimiento del sitio"
 
-php artisan settings:create mail smtp_host string --value="smtp.gmail.com" --description="Host del servidor SMTP"
+php artisan settings:create mail smtp_host string --group="smtp" --value="smtp.gmail.com" --description="Host del servidor SMTP"
 ```
 
 > Si el setting ya existe, el comando no lo modifica ni genera error — simplemente lo omite.

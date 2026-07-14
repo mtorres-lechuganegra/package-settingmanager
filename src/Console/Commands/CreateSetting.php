@@ -10,7 +10,8 @@ class CreateSetting extends Command
     protected $signature = 'settings:create
                             {module : Módulo al que pertenece}
                             {key : Clave única del setting}
-                            {type : Tipo de dato (string|integer|float|boolean|json|array)}
+                            {type : Tipo de dato (string|integer|float|boolean|json|array|encrypted)}
+                            {--group= : Grupo del setting (opcional)}
                             {--value= : Valor inicial}
                             {--description= : Descripción del setting}
                             {--inactive : Crear el setting como inactivo}
@@ -20,24 +21,33 @@ class CreateSetting extends Command
 
     public function handle(): int
     {
+        $module = $this->argument('module');
+        $key    = $this->argument('key');
+        $group  = $this->option('group');
+
         $setting = Setting::firstOrCreate(
             [
-                'module' => $this->argument('module'),
-                'key' => $this->argument('key'),
+                'module' => $module,
+                'group'  => $group,
+                'key'    => $key,
             ],
             [
-                'type' => $this->argument('type'),
-                'value' => $this->option('value'),
+                'type'        => $this->argument('type'),
+                'value'       => $this->option('value'),
                 'description' => $this->option('description'),
-                'is_active' => !$this->option('inactive'),
-                'is_locked' => (bool) $this->option('locked'),
+                'is_active'   => !$this->option('inactive'),
+                'is_locked'   => (bool) $this->option('locked'),
             ]
         );
 
+        $name = $group
+            ? "{$module}.{$group}.{$key}"
+            : "{$module}.{$key}";
+
         if ($setting->wasRecentlyCreated) {
-            $this->info("Setting [{$this->argument('module')}.{$this->argument('key')}] creado correctamente.");
+            $this->info("Setting [{$name}] creado correctamente.");
         } else {
-            $this->warn("Setting [{$this->argument('module')}.{$this->argument('key')}] ya existe, no se modificó.");
+            $this->warn("Setting [{$name}] ya existe, no se modificó.");
         }
 
         return Command::SUCCESS;

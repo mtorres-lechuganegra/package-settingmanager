@@ -13,6 +13,7 @@ class Setting extends Model
 
     protected $fillable = [
         'module',
+        'group',
         'key',
         'type',
         'value',
@@ -67,17 +68,19 @@ class Setting extends Model
         foreach ($events as $event) {
             static::$event(function ($model) use ($event) {
 
-                $safeFields = ['id', 'module', 'key', 'type', 'value', 'is_active', 'is_locked'];
+                $safeFields = ['id', 'module', 'group', 'key', 'type', 'value', 'is_active', 'is_locked'];
                 $logData = collect($model->toArray())->only($safeFields)->toArray();
 
-                SettingLogService::register('settings_logs', [
+                SettingLogService::register([
+                    'data_id' => $model->id,
                     'data_module' => $model->module ?? null,
-                    'data_key' => $model->key ?? null,
+                    'data_code' => $model->group ? "{$model->group}.{$model->key}" : $model->key,
+                    'data_name' => $model->value ?? null,
                     'data_type' => $model->type ?? null,
-                    'data_old_value' => $model->getOriginal('value') ?? null,
-                    'data_new_value' => $model->value ?? null,
+                    'data_date' => $model->created_at ?? null,
+                    'data_status' => $model->is_active ? 'active' : 'inactive',
                     'action' => $event,
-                    'user_id' => Auth::check() ? Auth::id() : null,
+                    'user_id' => Auth::guard('api')->id(),
                     'log_data' => $logData,
                     'ip_address' => request()->ip(),
                     'user_agent' => request()->userAgent(),
