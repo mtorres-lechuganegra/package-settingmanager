@@ -40,12 +40,13 @@ class SettingService
      * @param bool $includeLocked Incluid registros bloqueados.
      * @return array|null Setting con módulo, clave, tipo y valor, o null si no existe.
      */
-    public function get(string $module, string $key, bool $includeLocked = false): array|null
+    public function get(string $module, string $key, string $group = '', bool $includeLocked = false): array|null
     {
         $setting = Cache::remember(
-            "settingmanager.{$module}.{$key}",
+            "settingmanager.{$module}.{$group}.{$key}",
             config('settingmanager.cache_ttl', 3600),
             fn() => Setting::where('module', $module)
+                ->where(fn($q) => $q->where('group', $group ?? '')->orWhereNull('group'))
                 ->where('key', $key)
                 ->where('is_active', true)
                 ->when(!$includeLocked, fn($q) => $q->where('is_locked', false))
@@ -91,7 +92,7 @@ class SettingService
             $setting->value = $item['value'];
             $setting->save();
 
-            $this->clearCache($module, $item['key']);
+            $this->clearCache($module, $item['key'], $item['group'] ?? '');
 
             $updated[$item['key']] = [
                 'group' => $setting->group,
@@ -110,10 +111,10 @@ class SettingService
      * @param string|null $key Clave específica a limpiar (opcional).
      * @return void
      */
-    public function clearCache(string $module, ?string $key = null): void
+    public function clearCache(string $module, ?string $key = null, string $group = ''): void
     {
         if ($key) {
-            Cache::forget("settingmanager.{$module}.{$key}");
+            Cache::forget("settingmanager.{$module}.{$group}.{$key}");
         }
         Cache::forget("settingmanager.module.{$module}");
     }

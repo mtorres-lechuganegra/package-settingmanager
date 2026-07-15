@@ -5,6 +5,7 @@ namespace LechugaNegra\SettingManager\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use LechugaNegra\SettingManager\Http\Requests\GetSettingRequest;
 use LechugaNegra\SettingManager\Http\Requests\UpdateSettingRequest;
 use LechugaNegra\SettingManager\Services\SettingService;
 
@@ -37,14 +38,16 @@ class SettingController extends Controller
     /**
      * Obtener un setting puntual por módulo y clave.
      *
+     * @param GetSettingRequest $request Datos validados con el grupo opcional.
      * @param string $module Módulo del setting.
      * @param string $key Clave del setting.
      * @return JsonResponse Setting encontrado (200), no encontrado (404) o error (500).
      */
-    public function get(string $module, string $key): JsonResponse
+    public function get(GetSettingRequest $request, string $module, string $key): JsonResponse
     {
         try {
-            $setting = $this->settingService->get($module, $key);
+            $group = $request->validated()['group'] ?? '';
+            $setting = $this->settingService->get($module, $key, $group);
 
             if (!$setting) {
                 return response()->json(['error' => 'Setting not found'], 404);

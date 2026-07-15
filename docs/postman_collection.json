@@ -55,7 +55,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{url}}/api/settings/general/maintenance_mode",
+              "raw": "{{url}}/api/settings/general/maintenance_mode?group=",
               "host": [
                 "{{url}}"
               ],
@@ -64,6 +64,13 @@
                 "settings",
                 "general",
                 "maintenance_mode"
+              ],
+              "query": [
+                {
+                  "key": "group",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           },

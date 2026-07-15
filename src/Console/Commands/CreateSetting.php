@@ -23,7 +23,7 @@ class CreateSetting extends Command
     {
         $module = $this->argument('module');
         $key = $this->argument('key');
-        $group  = $this->option('group');
+        $group  = $this->option('group') ?? '';
 
         $setting = Setting::firstOrCreate(
             [
