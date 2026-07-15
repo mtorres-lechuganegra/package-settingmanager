@@ -22,21 +22,21 @@ class CreateSetting extends Command
     public function handle(): int
     {
         $module = $this->argument('module');
-        $key    = $this->argument('key');
+        $key = $this->argument('key');
         $group  = $this->option('group');
 
         $setting = Setting::firstOrCreate(
             [
                 'module' => $module,
-                'group'  => $group,
-                'key'    => $key,
+                'group' => $group,
+                'key' => $key,
             ],
             [
-                'type'        => $this->argument('type'),
-                'value'       => $this->option('value'),
+                'type' => $this->argument('type'),
+                'value' => $this->option('value'),
                 'description' => $this->option('description'),
-                'is_active'   => !$this->option('inactive'),
-                'is_locked'   => (bool) $this->option('locked'),
+                'is_active' => !$this->option('inactive'),
+                'is_locked' => (bool) $this->option('locked'),
             ]
         );
 
