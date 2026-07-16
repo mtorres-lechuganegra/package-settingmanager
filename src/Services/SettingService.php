@@ -9,35 +9,11 @@ use LechugaNegra\SettingManager\Models\Setting;
 class SettingService
 {
     /**
-     * Obtener todos los settings activos de un módulo.
-     *
-     * @param string $module Módulo a consultar.
-     * @param bool $includeLocked Incluid registros bloqueados.
-     * @return array Settings del módulo con su valor y tipo.
-     */
-    public function getByModule(string $module, bool $includeLocked = false, bool $onlyActive = true): array
-    {
-        return Cache::remember(
-            "settingmanager.module.{$module}",
-            config('settingmanager.cache_ttl', 3600),
-            fn() => Setting::where('module', $module)
-                ->when($onlyActive, fn($q) => $q->where('is_active', true))
-                ->when(!$includeLocked, fn($q) => $q->where('is_locked', false))
-                ->get()
-                ->mapWithKeys(fn($s) => [$s->key => [
-                    'group' => $s->group,
-                    'value' => $s->value,
-                    'type' => $s->type,
-                ]])
-                ->toArray()
-        );
-    }
-
-    /**
      * Obtener un setting puntual por módulo y clave.
      *
      * @param string $module Módulo del setting.
      * @param string $key Clave del setting.
+     * @param string $group Grupo del setting.
      * @param bool $includeLocked Incluid registros bloqueados.
      * @return array|null Setting con módulo, clave, tipo y valor, o null si no existe.
      */
@@ -64,18 +40,89 @@ class SettingService
             'key' => $key,
             'type' => $setting->type,
             'value' => $setting->value,
+            'is_active' => $setting->is_active,
         ];
     }
 
     /**
-     * Actualizar uno o varios settings de un módulo.
+     * Obtener todos los settings activos de un módulo.
+     *
+     * @param string $module Módulo a consultar.
+     * @param bool $includeLocked Incluid registros bloqueados.
+     * @return array Settings del módulo con su valor y tipo.
+     */
+    public function getByModule(string $module, bool $includeLocked = false, bool $onlyActive = true): array
+    {
+        return Cache::remember(
+            "settingmanager.module.{$module}",
+            config('settingmanager.cache_ttl', 3600),
+            fn() => Setting::where('module', $module)
+                ->when($onlyActive, fn($q) => $q->where('is_active', true))
+                ->when(!$includeLocked, fn($q) => $q->where('is_locked', false))
+                ->get()
+                ->mapWithKeys(fn($s) => [$s->key => [
+                    'group' => $s->group,
+                    'value' => $s->value,
+                    'type' => $s->type,
+                    'is_active' => $s->is_active,
+                ]])
+                ->toArray()
+        );
+    }
+
+    /**
+     * Actualizar unoa variable setting de un módulo.
+     *
+     * @param string $module Módulo del setting.
+     * @param string $key Clave del setting.
+     * @param string $group Grupo del setting.
+     * @param bool $includeLocked Incluid registros bloqueados.
+     * @return array|null Setting con módulo, clave, tipo y valor, o null si no existe.
+     */
+    public function update(string $module, string $key, string $group = '', mixed $value = null, ?bool $isActive = null, bool $includeLocked = false): array|null
+    {
+        $setting = Setting::where('module', $module)
+            ->where('key', $key)
+            ->when(
+                $group !== '',
+                fn($q) => $q->where('group', $group),
+                fn($q) => $q->where(fn($q) => $q->where('group', '')->orWhereNull('group'))
+            )
+            ->when(!$includeLocked, fn($q) => $q->where('is_locked', false))
+            ->first();
+
+        if (!$setting) {
+            Log::warning("SettingService.update: key [{$key}] no existe en módulo [{$module}]");
+            return null;
+        }
+
+        $setting->value = $value;
+
+        if ($isActive !== null) {
+            $setting->is_active = $isActive;
+        }
+
+        $setting->save();
+
+        $this->clearCache($module, $key, $group);
+
+        return [
+            'group' => $setting->group,
+            'value' => $setting->value,
+            'type' => $setting->type,
+            'is_active' => $setting->is_active,
+        ];
+    }
+
+    /**
+     * Actualizar unoa variable setting de un módulo.
      *
      * @param string $module Módulo al que pertenecen los settings.
      * @param array $data Array con clave 'data' conteniendo los pares key/value a actualizar.
      * @param bool $includeLocked Incluid registros bloqueados.
      * @return array Settings actualizados con su valor y tipo.
      */
-    public function update(string $module, array $data, bool $includeLocked = false): array
+    public function updateByModule(string $module, array $data, bool $includeLocked = false): array
     {
         $updated = [];
 
@@ -95,6 +142,10 @@ class SettingService
                 continue;
             }
 
+            if (array_key_exists('is_active', $item) && $item['is_active'] !== null) {
+                $setting->is_active = $item['is_active'];
+            }
+
             $setting->value = $item['value'];
             $setting->save();
 
@@ -104,6 +155,7 @@ class SettingService
                 'group' => $setting->group,
                 'value' => $setting->value,
                 'type' => $setting->type,
+                'is_active' => $setting->is_active,
             ];
         }
 

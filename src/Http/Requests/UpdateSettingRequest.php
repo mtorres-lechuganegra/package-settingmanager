@@ -14,23 +14,21 @@ class UpdateSettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'data' => 'required|array|min:1',
-            'data.*.group' => 'nullable|string',
-            'data.*.key' => 'required|string',
-            'data.*.value' => 'required',
+            'group' => 'nullable|string',
+            'key' => 'required|string',
+            'value' => 'required',
+            'is_active' => 'sometimes|nullable|boolean',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'data.required' => 'The data field is required.',
-            'data.array' => 'The data field must be an array.',
-            'data.min' => 'At least one setting must be provided.',
-            'data.*.group.string' => 'Each setting group must be a string.',
-            'data.*.key.required' => 'Each setting must have a key.',
-            'data.*.key.string' => 'Each setting key must be a string.',
-            'data.*.value.required' => 'Each setting must have a value.',
+            'group.string' => 'The setting group must be a string.',
+            'key.required' => 'The setting must have a key.',
+            'key.string' => 'The setting key must be a string.',
+            'value.required' => 'The setting must have a value.',
+            'is_active.boolean' => 'The is_active field must be a boolean.',
         ];
     }
 }
