@@ -15,16 +15,17 @@ class SettingService
      * @param bool $includeLocked Incluid registros bloqueados.
      * @return array Settings del módulo con su valor y tipo.
      */
-    public function getByModule(string $module, bool $includeLocked = false): array
+    public function getByModule(string $module, bool $includeLocked = false, bool $onlyActive = true): array
     {
         return Cache::remember(
             "settingmanager.module.{$module}",
             config('settingmanager.cache_ttl', 3600),
             fn() => Setting::where('module', $module)
-                ->where('is_active', true)
+                ->when($onlyActive, fn($q) => $q->where('is_active', true))
                 ->when(!$includeLocked, fn($q) => $q->where('is_locked', false))
                 ->get()
                 ->mapWithKeys(fn($s) => [$s->key => [
+                    'group' => $s->group,
                     'value' => $s->value,
                     'type' => $s->type,
                 ]])
@@ -40,7 +41,7 @@ class SettingService
      * @param bool $includeLocked Incluid registros bloqueados.
      * @return array|null Setting con módulo, clave, tipo y valor, o null si no existe.
      */
-    public function get(string $module, string $key, string $group = '', bool $includeLocked = false): array|null
+    public function get(string $module, string $key, string $group = '', bool $includeLocked = false, bool $onlyActive = true): array|null
     {
         $setting = Cache::remember(
             "settingmanager.{$module}.{$group}.{$key}",
@@ -48,7 +49,7 @@ class SettingService
             fn() => Setting::where('module', $module)
                 ->where(fn($q) => $q->where('group', $group ?? '')->orWhereNull('group'))
                 ->where('key', $key)
-                ->where('is_active', true)
+                ->when($onlyActive, fn($q) => $q->where('is_active', true))
                 ->when(!$includeLocked, fn($q) => $q->where('is_locked', false))
                 ->first()
         );
@@ -81,6 +82,11 @@ class SettingService
         foreach ($data['data'] as $item) {
             $setting = Setting::where('module', $module)
                 ->where('key', $item['key'])
+                ->when(
+                    isset($item['group']) && $item['group'] !== '',
+                    fn($q) => $q->where('group', $item['group']),
+                    fn($q) => $q->where(fn($q) => $q->where('group', '')->orWhereNull('group'))
+                )
                 ->when(!$includeLocked, fn($q) => $q->where('is_locked', false))
                 ->first();
 

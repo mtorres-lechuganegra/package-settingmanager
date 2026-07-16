@@ -4,7 +4,7 @@ namespace LechugaNegra\SettingManager\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GetSettingRequest extends FormRequest
+class GetSettingByModuleRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,7 +14,6 @@ class GetSettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'group' => ['sometimes', 'nullable', 'string', 'max:100'],
             'only_active' => ['sometimes', 'nullable', 'boolean'],
         ];
     }
@@ -22,8 +21,6 @@ class GetSettingRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'group.string' => 'The group field must be a string.',
-            'group.max' => 'The group field must not exceed 100 characters.',
             'only_active.boolean' => 'The only_active field must be a boolean.',
         ];
     }

@@ -5,6 +5,7 @@ namespace LechugaNegra\SettingManager\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use LechugaNegra\SettingManager\Http\Requests\GetSettingByModuleRequest;
 use LechugaNegra\SettingManager\Http\Requests\GetSettingRequest;
 use LechugaNegra\SettingManager\Http\Requests\UpdateSettingRequest;
 use LechugaNegra\SettingManager\Services\SettingService;
@@ -21,13 +22,15 @@ class SettingController extends Controller
     /**
      * Obtener todos los settings activos de un módulo.
      *
+     * @param GetSettingByModuleRequest $request Datos validados con el grupo opcional.
      * @param string $module Módulo a consultar.
      * @return JsonResponse Settings del módulo (200) o error (500).
      */
-    public function getByModule(string $module): JsonResponse
+    public function getByModule(GetSettingByModuleRequest $request, string $module): JsonResponse
     {
         try {
-            $settings = $this->settingService->getByModule($module);
+            $onlyActive = $request->validated()['only_active'] ?? true;
+            $settings = $this->settingService->getByModule($module, false, $onlyActive);
             return response()->json($settings, 200);
         } catch (\Exception $e) {
             Log::error("SettingController.getByModule: {$e->getMessage()}", ['module' => $module]);
@@ -47,7 +50,8 @@ class SettingController extends Controller
     {
         try {
             $group = $request->validated()['group'] ?? '';
-            $setting = $this->settingService->get($module, $key, $group);
+            $onlyActive = $request->validated()['only_active'] ?? true;
+            $setting = $this->settingService->get($module, $key, $group, false, $onlyActive);
 
             if (!$setting) {
                 return response()->json(['error' => 'Setting not found'], 404);
