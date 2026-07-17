@@ -93,7 +93,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"data\": [\r\n        { \"key\": \"maintenance_mode\", \"value\": 1 }\r\n    ]\r\n}",
+              "raw": "{\n  \"data\": [\n    {\n      \"key\": \"maintenance_mode\",\n      \"value\": 1,\n      \"is_active\": true,\n      \"group\": \"\"\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -109,6 +109,45 @@
                 "api",
                 "settings",
                 "general"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Setting By Key",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"maintenance_mode\",\n  \"value\": true,\n  \"is_active\": true,\n  \"group\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/settings/general/maintenance_mode",
+              "host": ["{{url}}"],
+              "path": ["api", "settings", "general", "maintenance_mode"],
+              "query": [
+                {
+                  "key": "group",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           },
