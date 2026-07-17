@@ -80,7 +80,13 @@ class Setting extends Model
                     'data_date' => $model->created_at ?? null,
                     'data_status' => $model->is_active ? 'active' : 'inactive',
                     'action' => $event,
-                    'user_id' => Auth::guard('api')->id(),
+                    'user_id' => (function () {
+                        try {
+                            return Auth::guard('api')->id();
+                        } catch (\Throwable $e) {
+                            return null;
+                        }
+                    })(),
                     'log_data' => $logData,
                     'ip_address' => request()->ip(),
                     'user_agent' => request()->userAgent(),

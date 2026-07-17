@@ -15,7 +15,6 @@ class UpdateSettingRequest extends FormRequest
     {
         return [
             'group' => 'nullable|string',
-            'key' => 'required|string',
             'value' => 'required',
             'is_active' => 'sometimes|nullable|boolean',
         ];
@@ -25,8 +24,6 @@ class UpdateSettingRequest extends FormRequest
     {
         return [
             'group.string' => 'The setting group must be a string.',
-            'key.required' => 'The setting must have a key.',
-            'key.string' => 'The setting key must be a string.',
             'value.required' => 'The setting must have a value.',
             'is_active.boolean' => 'The is_active field must be a boolean.',
         ];
